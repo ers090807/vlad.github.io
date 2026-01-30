@@ -1,0 +1,385 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Владислав Тютюников — профиль</title>
+  <style>
+    /* ==========================
+       Стиль: тёмно-синяя тема
+       ========================== */
+    :root{
+      --bg-1: #041428; /* very dark navy */
+      --bg-2: #0b2b4a;
+      --card: #0f3a63;
+      --accent: #1fb6ff;
+      --glass: rgba(255,255,255,0.04);
+      --muted: rgba(255,255,255,0.65);
+      --glass-2: rgba(255,255,255,0.03);
+      --radius: 14px;
+      --transition: 300ms cubic-bezier(.2,.9,.3,1);
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      min-height:100%;
+      background: linear-gradient(160deg,var(--bg-1) 0%, var(--bg-2) 100%);
+      color: #e9f6ff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;align-items:center;justify-content:center;padding:24px;
+    }
+
+    .wrap{
+      width:100%;max-width:1100px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:20px;padding:28px;box-shadow:0 10px 35px rgba(2,6,23,0.6);backdrop-filter: blur(6px);
+    }
+
+    header{display:flex;gap:20px;align-items:center;margin-bottom:18px}
+    .avatar{
+      width:96px;height:96px;border-radius:16px;flex:0 0 96px;background:linear-gradient(135deg,#12395f,#0a5a9e);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:40px;color:rgba(255,255,255,0.95);
+      box-shadow:0 6px 18px rgba(3,10,30,0.6);
+    }
+    .title{flex:1}
+    h1{margin:0;font-size:20px}
+    .subtitle{margin-top:6px;color:var(--muted);font-size:13px}
+
+    .controls{display:flex;gap:10px}
+    button{background:var(--accent);border:0;padding:10px 14px;border-radius:10px;color:#042433;font-weight:600;cursor:pointer;transition:transform var(--transition);box-shadow:0 6px 18px rgba(31,182,255,0.08)}
+    button:active{transform:translateY(2px)}
+    .btn-ghost{background:transparent;color:var(--accent);border:1px solid rgba(255,255,255,0.06)}
+
+    main{display:grid;grid-template-columns:1fr 360px;gap:20px}
+
+    /* Левый столб — секции */
+    .sections{display:grid;gap:12px}
+    .card{
+      background:linear-gradient(180deg,var(--card), rgba(10,48,77,0.8));padding:14px;border-radius:14px;border:1px solid var(--glass-2);overflow:hidden;position:relative;transition:transform var(--transition), box-shadow var(--transition);
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,0.5)}
+
+    .row{display:flex;align-items:center;gap:14px}
+    .icon{
+      width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;flex:0 0 52px
+    }
+
+    .section-title{font-weight:700}
+    .section-meta{font-size:13px;color:var(--muted)}
+
+    /* Скрытый блок с контентом, разворачивается при hover */
+    .content{
+      max-height:0;overflow:hidden;transition:max-height var(--transition), opacity var(--transition);opacity:0;margin-top:8px;
+    }
+    .card:hover .content{max-height:400px;opacity:1}
+
+    /* editable fields */
+    .editable{min-height:54px;padding:10px;border-radius:10px;background:transparent;border:1px dashed rgba(255,255,255,0.03);outline:none;color:inherit}
+
+    /* Правая панель — детали */
+    aside{display:flex;flex-direction:column;gap:12px}
+    .panel{padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid var(--glass-2)}
+
+    label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    input[type=text]{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+
+    .small{font-size:13px;color:var(--muted)}
+
+    footer{display:flex;justify-content:space-between;align-items:center;margin-top:18px;color:var(--muted);font-size:13px}
+
+    /* Анимация при клике на кнопку: короткий эффект "pulse" */
+    .pulse{animation:pulse 650ms ease-out}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+
+    /* toast */
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:28px;padding:10px 16px;background:#052b44;border-radius:10px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 8px 25px rgba(2,8,20,0.6);color:var(--accent);display:none}
+    .toast.show{display:block}
+
+    /* responsive */
+    @media (max-width:900px){main{grid-template-columns:1fr}aside{order:2}}
+  </style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <div class="avatar" id="avatar">ВТ</div>
+      <div class="title">
+        <h1 contenteditable id="fullName">Тютюников Владислав</h1>
+        <div class="subtitle">17 лет · студент Бишкекского технического колледжа</div>
+      </div>
+      <div class="controls">
+        <button id="saveBtn">Сохранить</button>
+        <button class="btn-ghost" id="shareBtn">Скопировать ссылку</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="sections" aria-label="Разделы профиля">
+
+        <!-- СЕМЬЯ -->
+        <article class="card" id="card-family">
+          <div class="row">
+            <div class="icon" aria-hidden>
+              <!-- family SVG -->
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 12C14.2091 12 16 10.2091 16 8C16 5.79086 14.2091 4 12 4C9.79086 4 8 5.79086 8 8C8 10.2091 9.79086 12 12 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 21C21 17.134 17.866 14 14 14H10C6.13401 14 3 17.134 3 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div class="section-title">Семья</div>
+              <div class="section-meta">Наведи курсор, чтобы увидеть/редактировать</div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="editable" id="family" contenteditable placeholder="Напишите про семью...">Мама: Ирина, Папа: Алексей. Родители поддерживают мои учебные и проектные инициативы.</div>
+          </div>
+        </article>
+
+        <!-- ДРУЗЬЯ -->
+        <article class="card" id="card-friends">
+          <div class="row">
+            <div class="icon">
+              <!-- friends SVG -->
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 21V19C17 17.8954 16.1046 17 15 17H9C7.89543 17 7 17.8954 7 19V21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div class="section-title">Друзья</div>
+              <div class="section-meta">Наведи курсор, чтобы увидеть/редактировать</div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="editable" id="friends" contenteditable>Друзья из колледжа и соседние одноклассники — команда для проектов и хобби.</div>
+          </div>
+        </article>
+
+        <!-- РАБОТА -->
+        <article class="card" id="card-work">
+          <div class="row">
+            <div class="icon">
+              <!-- work SVG -->
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="7" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M16 3H8V7H16V3Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div class="section-title">Работа</div>
+              <div class="section-meta">Наведи курсор, чтобы увидеть/редактировать</div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="editable" id="work" contenteditable>Частичная занятость в мастерской/практика по специальности, участие в проекте Taptyk.</div>
+          </div>
+        </article>
+
+        <!-- УЧЕБА -->
+        <article class="card" id="card-study">
+          <div class="row">
+            <div class="icon">
+              <!-- study SVG -->
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div class="section-title">Учёба</div>
+              <div class="section-meta">Наведи курсор, чтобы увидеть/редактировать</div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="editable" id="study" contenteditable>Студент Бишкекского технического колледжа. Любимые предметы: информатика, электроника и ремонт техники.</div>
+          </div>
+        </article>
+
+      </section>
+
+      <aside>
+        <div class="panel">
+          <label for="role">Роль</label>
+          <input type="text" id="role" value="Студент / инженер проекта Taptyk" />
+          <p class="small" style="margin-top:10px">Используйте поля слева, наведите курсор на секцию чтобы раскрыть и спокойно редактируйте текст прямо в карточках. После редактирования нажмите «Сохранить».</p>
+        </div>
+
+        <div class="panel">
+          <label>Функции</label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button id="resetBtn" class="btn-ghost">Сбросить</button>
+            <button id="exportBtn">Экспорт .json</button>
+            <button id="importBtn" class="btn-ghost">Импорт .json</button>
+            <input type="file" id="fileInput" accept="application/json" style="display:none" />
+          </div>
+          <p class="small" style="margin-top:8px">Кнопка «Скопировать ссылку» положит данные в URL. Поделиться такой ссылкой — значит отправить весь профиль.</p>
+        </div>
+
+        <div class="panel">
+          <label>Цветовая тема</label>
+          <div class="small">Тёмно-синяя (можно менять в CSS)</div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <div>Версия: 1.0 — Редактируемый профиль</div>
+      <div class="small">Данные сохраняются локально (localStorage) и могут быть экспортированы/импортированы.</div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast">Ссылка скопирована в буфер обмена</div>
+
+  <script>
+    // Простая, но надёжная логика сохранения/импорта/шаринга
+    (function(){
+      const ids = ['fullName','family','friends','work','study','role','avatar']
+      const saveBtn = document.getElementById('saveBtn')
+      const resetBtn = document.getElementById('resetBtn')
+      const exportBtn = document.getElementById('exportBtn')
+      const importBtn = document.getElementById('importBtn')
+      const fileInput = document.getElementById('fileInput')
+      const shareBtn = document.getElementById('shareBtn')
+      const toast = document.getElementById('toast')
+
+      function getData(){
+        const data = {}
+        ids.forEach(id=>{
+          const el = document.getElementById(id)
+          if(!el) return
+          if(el.tagName === 'INPUT') data[id] = el.value
+          else data[id] = el.innerText || el.value || ''
+        })
+        return data
+      }
+
+      function setData(data){
+        ids.forEach(id=>{
+          const el = document.getElementById(id)
+          if(!el) return
+          if(el.tagName === 'INPUT') el.value = data[id] || ''
+          else el.innerText = data[id] || ''
+        })
+        // update avatar initials
+        const avatar = document.getElementById('avatar')
+        const name = document.getElementById('fullName').innerText || 'Владислав'
+        avatar.innerText = name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase()
+      }
+
+      function saveLocal(){
+        const data = getData()
+        localStorage.setItem('profile_vt', JSON.stringify(data))
+        flash(saveBtn)
+      }
+
+      function loadLocal(){
+        const raw = localStorage.getItem('profile_vt')
+        if(!raw) return false
+        try{
+          const data = JSON.parse(raw)
+          setData(data)
+          return true
+        }catch(e){console.warn('parse error',e);return false}
+      }
+
+      function resetDefaults(){
+        localStorage.removeItem('profile_vt')
+        location.hash = ''
+        location.reload()
+      }
+
+      function exportJson(){
+        const data = getData()
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'})
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url; a.download = 'profile_vladislav.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url)
+      }
+
+      function importJson(file){
+        const reader = new FileReader()
+        reader.onload = ()=>{
+          try{
+            const data = JSON.parse(reader.result)
+            setData(data)
+            saveLocal()
+            showToast('Профиль импортирован')
+          }catch(e){alert('Ошибка: неверный формат JSON')}
+        }
+        reader.readAsText(file)
+      }
+
+      function flash(btn){
+        btn.classList.add('pulse')
+        setTimeout(()=>btn.classList.remove('pulse'),700)
+        showToast('Сохранено локально')
+      }
+
+      function showToast(text){
+        toast.innerText = text
+        toast.classList.add('show')
+        setTimeout(()=>toast.classList.remove('show'),2400)
+      }
+
+      // Share: кодирует данные в хеш URL (не посылает на сервер)
+      function makeShareLink(){
+        const data = getData()
+        const json = JSON.stringify(data)
+        // encodeURIComponent + btoa
+        const compressed = btoa(unescape(encodeURIComponent(json)))
+        const url = location.origin + location.pathname + '#data=' + compressed
+        return url
+      }
+
+      function copyToClipboard(text){
+        navigator.clipboard.writeText(text).then(()=>{
+          showToast('Ссылка скопирована')
+        }).catch(()=>{alert('Невозможно скопировать. Скопируйте вручную: ' + text)})
+      }
+
+      // При загрузке: если в хеше есть data= то распарсить и применить
+      function tryLoadFromHash(){
+        if(!location.hash) return false
+        const h = location.hash.slice(1)
+        if(!h.startsWith('data=')) return false
+        const encoded = h.replace('data=','')
+        try{
+          const json = decodeURIComponent(escape(atob(encoded)))
+          const data = JSON.parse(json)
+          setData(data)
+          // also save locally so future visits keep it
+          localStorage.setItem('profile_vt', JSON.stringify(data))
+          showToast('Профиль загружен из ссылки')
+          return true
+        }catch(e){console.warn('hash parse error',e);return false}
+      }
+
+      // Events
+      saveBtn.addEventListener('click', ()=>{ saveLocal() })
+      resetBtn.addEventListener('click', ()=>{ if(confirm('Сбросить все данные и вернуть к умолчанию?')) resetDefaults() })
+      exportBtn.addEventListener('click', exportJson)
+      importBtn.addEventListener('click', ()=> fileInput.click())
+      fileInput.addEventListener('change', ()=>{ if(fileInput.files && fileInput.files[0]) importJson(fileInput.files[0]) })
+
+      shareBtn.addEventListener('click', ()=>{
+        const url = makeShareLink()
+        copyToClipboard(url)
+      })
+
+      // init
+      const fromHash = tryLoadFromHash()
+      if(!fromHash){ loadLocal() }
+      // make editable areas more user friendly
+      document.querySelectorAll('.editable').forEach(el=>{
+        el.addEventListener('focus', ()=>el.style.outline = '2px solid rgba(31,182,255,0.12)')
+        el.addEventListener('blur', ()=>el.style.outline = 'none')
+      })
+
+      // small UX: pressing Ctrl+S saves
+      window.addEventListener('keydown',(e)=>{
+        if((e.ctrlKey||e.metaKey) && e.key.toLowerCase() === 's'){e.preventDefault(); saveLocal()}
+      })
+
+      // if page loaded with empty name, populate defaults
+      const nameEl = document.getElementById('fullName')
+      if(!nameEl.innerText.trim()) nameEl.innerText = 'Тютюников Владислав'
+      // avatar computed on init
+      setData(getData())
+
+    })();
+  </script>
+
+  <!--
+     -->
+</body>
+</html>
